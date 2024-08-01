@@ -1,0 +1,48 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: test
+  namespace: kargo-test
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-test
+    sources:
+      direct: true
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: https://github.com/yhrn/kargo-test
+      writeBranch: stages/test
+      kustomize:
+        images:
+        - image: ghcr.io/yhrn/kargo-test-app
+          path: config/stages/test
+    argoCDAppUpdates:
+    - appName: kargo-test-test
+      appNamespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: kargo-test
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-test
+    sources:
+      stages:
+      - test
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: https://github.com/yhrn/kargo-test
+      writeBranch: stages/prod
+      kustomize:
+        images:
+        - image: ghcr.io/yhrn/kargo-test-app
+          path: config/stages/prod
+    argoCDAppUpdates:
+    - appName: kargo-test-prod
+      appNamespace: argocd
