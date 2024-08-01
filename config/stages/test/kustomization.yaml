@@ -8,10 +8,10 @@ patches:
 - patch: |-
     - op: replace
       path: /spec/ports/0/nodePort
-      value: 30081
+      value: 30091
   target:
     kind: Service
     name: kargo-test-app
 images:
 - name: ghcr.io/yhrn/kargo-test-app
-  newTag: bd56f7af447a96d0713b4da5485e647f9616d4c7
+  newTag: 7580513ae708505dbfd2d069d7b07b0bc7a64b3c
