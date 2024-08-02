@@ -6,31 +6,58 @@ on:
       - main
 
 permissions:
+  id-token: write
   packages: write
+  contents: read
+  attestations: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}-app
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: type=sha,prefix=,format=long
+
+    - name: Get Git commit timestamps
+      run: echo "TIMESTAMP=$(git log -1 --pretty=%ct)" >> $GITHUB_ENV
+
     - name: Build and push Docker image
-      uses: docker/build-push-action@v2
+      id: push
+      uses: docker/build-push-action@v6
       with:
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/kargo-test-app:${{ github.sha }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+      env:
+        SOURCE_DATE_EPOCH: ${{ env.TIMESTAMP }}
+      # The stuff below was an attempt at making deterministic builds but it messes
+      # with Kargo because the only "imageSelectionStrategy" that makes sense for what
+      # I want to do is "NewestBuild" and it depends on the image create timestamp.
+      #   labels: |
+      #     org.opencontainers.image.title=kargo-test-app
+      #     org.opencontainers.image.description=Testing Kargo
+      #     org.opencontainers.image.source=https://github.com/yhrn/kargo-test
+      #     org.opencontainers.image.url=https://github.com/yhrn/kargo-test
+      # env:
+      #   SOURCE_DATE_EPOCH: 0
