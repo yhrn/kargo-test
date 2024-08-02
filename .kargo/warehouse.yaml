@@ -8,6 +8,7 @@ spec:
   - image:
       repoURL: ghcr.io/yhrn/kargo-test-app
       imageSelectionStrategy: NewestBuild
+      gitRepoURL: https://github.com/yhrn/kargo-test.git
   - git:
       repoURL: https://github.com/yhrn/kargo-test.git
       branch: main

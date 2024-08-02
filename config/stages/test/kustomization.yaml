@@ -14,4 +14,4 @@ patches:
     name: kargo-test-app
 images:
 - name: ghcr.io/yhrn/kargo-test-app
-  newTag: 7580513ae708505dbfd2d069d7b07b0bc7a64b3c
+  newTag: fa74883300f2f44afdb4e415d41de46529fc191b
