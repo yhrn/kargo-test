@@ -14,6 +14,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}-app
 
     steps:
     - name: Checkout code
@@ -33,7 +36,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ghcr.io/${{ github.repository_owner }}/kargo-test-app
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: type=sha,prefix=sha-,format=long
 
     - name: Build and push Docker image
@@ -41,7 +44,13 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/kargo-test-app:${{ github.sha }}
+        tags: ${{ steps.meta.outputs.tags }}
+        #labels: ${{ steps.meta.outputs.labels }}
+        labels: |
+          org.opencontainers.image.title=kargo-test-app
+          org.opencontainers.image.description=Testing Kargo
+          org.opencontainers.image.source=https://github.com/yhrn/kargo-test
+          org.opencontainers.image.url=https://github.com/yhrn/kargo-test
       env:
         SOURCE_DATE_EPOCH: 0
 
