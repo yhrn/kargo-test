@@ -18,6 +18,7 @@ spec:
         images:
         - image: ghcr.io/yhrn/kargo-test-app
           path: config/stages/test
+          useDigest: true
     argoCDAppUpdates:
     - appName: kargo-test-test
       appNamespace: argocd
@@ -43,6 +44,7 @@ spec:
         images:
         - image: ghcr.io/yhrn/kargo-test-app
           path: config/stages/prod
+          useDigest: true
     argoCDAppUpdates:
     - appName: kargo-test-prod
       appNamespace: argocd
