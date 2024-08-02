@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kargo-test
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - stage: test
+      - stage: prod
+  template:
+    metadata:
+      name: kargo-test-{{stage}}
+      annotations:
+        kargo.akuity.io/authorized-stage: kargo-test:{{stage}}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/yhrn/kargo-test
+        targetRevision: stages/{{stage}}
+        path: config/stages/{{stage}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: kargo-test-{{stage}}
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
