@@ -14,6 +14,9 @@ spec:
     gitRepoUpdates:
     - repoURL: https://github.com/yhrn/kargo-test
       writeBranch: stages/test
+      origin:
+        kind: Warehouse
+        name: kargo-test
       kustomize:
         images:
         - image: ghcr.io/yhrn/kargo-test-app

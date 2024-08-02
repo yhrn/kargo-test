@@ -13,5 +13,5 @@ patches:
     kind: Service
     name: kargo-test-app
 images:
-- digest: sha256:34764228494ffdc99653355543c9f9498e29a8998a4c39c354dab66a5ed1ff4d
+- digest: sha256:2ff896f896c3bbf5214438ced6ab666b6ead8bdd230a5dc2c50cfd4513a2b142
   name: ghcr.io/yhrn/kargo-test-app
