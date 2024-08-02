@@ -53,10 +53,3 @@ jobs:
           org.opencontainers.image.url=https://github.com/yhrn/kargo-test
       env:
         SOURCE_DATE_EPOCH: 0
-
-    - name: Attest Docker image
-      uses: actions/attest-build-provenance@v1
-      with:
-        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: true
